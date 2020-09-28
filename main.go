@@ -17,6 +17,8 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{"*"})
 	credentials := handlers.AllowCredentials()
 
+	log.Print("Meow Author")
+
 	log.Print("running on : 10802")
 
 	http.ListenAndServe(":10802", handlers.CORS(header, methods, origins, credentials)(r))
