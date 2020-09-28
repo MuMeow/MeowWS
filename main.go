@@ -1,6 +1,8 @@
 package main
 
 import (
+	socket "MeowWebSocket/services/socket/service"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
@@ -17,7 +19,17 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{"*"})
 	credentials := handlers.AllowCredentials()
 
-	log.Print("Meow Author")
+	hub := socket.NewHub()
+
+	go hub.HubRun()
+
+	r.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		socket.Handler(hub, w, r)
+	}).Methods("GET")
+
+	r.HandleFunc("/api/msg", func(w http.ResponseWriter, r *http.Request) {
+		socket.SendMSG(hub, w, r)
+	})
 
 	log.Print("running on : 10802")
 
